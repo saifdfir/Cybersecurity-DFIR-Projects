@@ -85,7 +85,3 @@ Open to collaboration on DFIR projects and security research.
 ---
 
 <p align="center"><i>This repository is actively maintained and documented.</i></p>
-
----
-
-<p align="center"><i>This repository is actively maintained and documented.</i></p>
