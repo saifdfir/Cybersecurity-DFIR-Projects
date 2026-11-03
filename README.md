@@ -48,14 +48,6 @@ The goal of this repository is to demonstrate practical competency in **Blue Tea
 
 ---
 
-### 2️⃣ *Upcoming Projects*
-*Active Development:*
-- **Windows Event Log Investigation:** Analyzing Event IDs 4624, 4625, and Sysmon logs.
-- **Network Traffic Analysis:** Investigating malicious traffic flows using Wireshark (PCAP).
-- **SIEM Detection Rules:** Writing basic detection logic for Splunk/Wazuh.
-
----
-
 ## 🧰 Tools & Technologies
 
 | Category | Tools & Skills |
@@ -68,20 +60,8 @@ The goal of this repository is to demonstrate practical competency in **Blue Tea
 
 ---
 
-## 📈 Roadmap
-- [ ] Documentation: Full Investigation Report for Linux Attack
-- [ ] Project: Windows Event Log Analysis (Brute Force/Ransomware)
-- [ ] Project: Network Intrusion Analysis (PCAP)
-- [ ] Integration: SIEM Dashboard setup (Wazuh/ELK)
-
----
-
 ## 📬 Contact
 Open to collaboration on DFIR projects and security research.
 
 - *📧 Email:* [saifcyb@gmail.com](mailto:saifcyb@gmail.com)
 - *🔗 LinkedIn:* [Mohammed Saif Ul Islam](https://www.linkedin.com/in/mohammed-saif-ul-islam-85a68639a/)
-
----
-
-<p align="center"><i>This repository is actively maintained and documented.</i></p>
