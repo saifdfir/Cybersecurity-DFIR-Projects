@@ -12,7 +12,8 @@ I reviewed authentication and system logs to identify the source IP, trace accou
 
 [Read the Linux lab report](Linux-Attack-Simulation/README.md)
 
-## Contact
+## 📬 Contact
+Open to collaboration on DFIR projects and security research.
 
-- [Email](mailto:saifcyb@gmail.com)
-- [LinkedIn](https://www.linkedin.com/in/mohammed-saif-ul-islam-85a68639a/)
+- *📧 Email:* [saifcyb@gmail.com](mailto:saifcyb@gmail.com)
+- *🔗 LinkedIn:* [Mohammed Saif Ul Islam](https://www.linkedin.com/in/mohammed-saif-ul-islam-85a68639a/)
