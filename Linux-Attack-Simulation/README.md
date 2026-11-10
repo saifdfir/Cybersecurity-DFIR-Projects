@@ -132,12 +132,4 @@ This matches the attacker workflow:
 
 ## 🧾 Conclusion
 
-This DFIR case study demonstrates real-world skills across:
-
-- Log forensics  
-- Evidence collection  
-- Attack reconstruction  
-- MITRE ATT&CK mapping  
-- Security investigation processes  
-
-This project forms the foundation for upcoming Windows and network forensics investigations.
+I reviewed the authentication records, sudo activity, account changes, and shell-history output from this lab. I organized the recorded events into a timeline and mapped them to MITRE ATT&CK.
