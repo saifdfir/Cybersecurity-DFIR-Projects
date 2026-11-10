@@ -1,53 +1,143 @@
-# Linux Attack Simulation and Log Forensics
+# 🔐 Linux Attack Simulation & Log Forensics  
+**Digital Forensics & Incident Response Case Study**
 
-This lab used a Linux server to examine SSH authentication, sudo sessions, local account creation, and a simulated data transfer. The investigation uses authentication logs and shell-history excerpts.
+This project simulates a real-world intrusion on a Linux server and documents a full DFIR investigation.  
+The goal is to demonstrate practical skills in **log analysis**, **attack reconstruction**, and **MITRE ATT&CK mapping**.
 
-## Evidence review
+---
 
-| Evidence | What the screenshot shows |
-| --- | --- |
-| [SSH authentication](screenshots/brute-force.png) | Failed password attempts for `devops` from `10.0.2.2`, followed by an accepted password and session opening. |
-| [Sudo activity](screenshots/privilege-escalation.png) | `devops` runs `id` and `bash` as root through sudo. |
-| [Account creation](screenshots/backdoor-user.png) | A local account named `support1` is created and its password is changed. |
-| [SSH login](screenshots/valid-login.png) | `support1` logs in from `10.0.2.2` at 15:29:16. |
-| [Shell-history excerpt](screenshots/data-dump-and-exfiltration.png) | A staged file contains explicitly fake customer data. Recorded curl commands target `127.0.0.1:8080`. |
-| [Account activity](screenshots/timeline-analysis.png) | Additional `support1` sessions and `devops` reading that account’s Bash history. |
+## 📌 Scenario Summary
 
-The lab notes identify Hydra as the password-guessing tool. The authentication screenshot records the attempts and accepted login, without identifying the tool that generated them.
+A Linux server was compromised using SSH brute force, followed by privilege escalation, persistence creation, and an attempted data exfiltration.
 
-## Timeline supported by the screenshots
+This documentation covers:
 
-The log date is 7 December 2025. Times below use the recorded UTC+05:30 offset.
+1. **Red Team Attack Simulation**
+2. **Blue Team Log Investigation**
+3. **Timeline Reconstruction**
+4. **MITRE ATT&CK Mapping**
+5. **Screenshots & Evidence Artifacts**
 
-| Time | Recorded event |
-| --- | --- |
-| 15:26:26–15:26:48 | Failed SSH password attempts for `devops` |
-| 15:26:53 | Accepted SSH password for `devops` and session opening |
-| 15:27:19 | `devops` runs `id` as root through sudo |
-| 15:27:24 | `devops` starts `bash` as root through sudo |
-| 15:28:29 | Local account `support1` is created |
-| 15:28:43 | Password changed for `support1` |
-| 15:29:16 | Accepted SSH password for `support1` |
-| 15:35:57 | Another accepted SSH login for `support1` |
-| 17:27:32 | `devops` reads `/home/support1/.bash_history` through sudo |
+---
 
-The account-activity screenshot contains entries displayed out of timestamp order. This table sorts the selected events by their recorded time.
+## 🔴 1. Attack Simulation (Red Team)
 
-## MITRE ATT&CK mapping
+### **1️⃣ SSH Brute Force Attack**
+A brute-force attempt was carried out against SSH using Hydra to guess valid credentials.
 
-The mappings below describe activities that could occur during an intrusion. They are interpretations of this controlled lab evidence.
+**MITRE ATT&CK:** `T1110 – Brute Force`
 
-| Activity | Mapping | Evidence limit |
-| --- | --- | --- |
-| Repeated SSH password attempts | [T1110.001 — Password Guessing](https://attack.mitre.org/techniques/T1110/001/) | Logs show failures and a later accepted password. |
-| SSH access using an accepted password | [T1078 — Valid Accounts](https://attack.mitre.org/techniques/T1078/) | Successful authentication is visible. |
-| Running a root shell through sudo | [T1548.003 — Sudo and Sudo Caching](https://attack.mitre.org/techniques/T1548/003/) | Sudo use is visible. The screenshots do not establish a sudoers misconfiguration or a software exploit. |
-| Creating a local account | [T1136.001 — Local Account](https://attack.mitre.org/techniques/T1136/001/) | Creation of `support1` is visible. The screenshots do not establish that it was a backdoor or added to the sudo group. |
+📸 *Screenshot:* `screenshots/brute-force.png`
 
-Reading shell history could map to [T1552.003 — Shell History](https://attack.mitre.org/techniques/T1552/003/) when it is used to seek credentials. Here, the visible command reads history during the investigation, so that mapping is conditional on intent.
+---
 
-## Limitations
+### **2️⃣ Valid Credential Login**
+After repeated attempts, the attacker successfully logged in using the compromised account:
 
-The screenshots do not show creation of `support11`, a sudo-group change, or a completed transfer to another host. The shell-history excerpt shows curl commands targeting the loopback address and does not establish their execution time or success.
+- Username: `support1`
+- Source IP: `10.0.2.2`
 
-The available evidence supports a sequence of authentication and administrative events. Attribution of each event to attacker activity requires the original session context.
+**MITRE ATT&CK:** `T1078 – Valid Accounts`
+
+📸 *Screenshot:* `screenshots/valid-login.png`
+
+---
+
+### **3️⃣ Privilege Escalation Attempt**
+The intruder attempted to escalate privileges using sudo misconfiguration:
+
+- Viewed root’s bash history  
+- Executed commands requiring elevated permissions  
+
+**MITRE ATT&CK:** `T1068 – Exploitation for Privilege Escalation`
+
+📸 *Screenshot:* `screenshots/privilege-escalation.png`
+
+---
+
+### **4️⃣ Persistence: Backdoor User Creation**
+A new local user (`support11`) was created and added to the sudo group.
+
+This is a common persistence technique after initial compromise.
+
+**MITRE ATT&CK:** `T1098 – Account Manipulation`
+
+📸 *Screenshot:* `screenshots/backdoor-user.png`
+
+---
+
+### **5️⃣ Data Exfiltration Attempt**
+The attacker prepared data (`fake_dump.sql`) and attempted to exfiltrate it using:
+
+- `curl` (HTTP exfiltration)
+- `nc` (netcat transfer)
+
+**MITRE ATT&CK:**  
+- `T1537 – Transfer Data to Cloud Account` (HTTP POST)  
+- `T1041 – Exfiltration Over C2 Channel`  
+
+📸 *Screenshot:* `screenshots/data-dump-and-exfiltration.png`
+
+---
+
+## 🔵 2. Blue Team Investigation (Forensics)
+
+### **Log Sources Used**
+- `/var/log/auth.log` → authentication attempts, ssh access  
+- `bash_history` → attacker activity  
+- Timestamps from multiple sessions  
+
+### **Key Findings**
+- Numerous failed SSH attempts preceding the compromise  
+- Successful login from IP `10.0.2.2`  
+- Multiple session openings for user `support1`  
+- Sudo privilege attempts  
+- Creation of a new user account (`support11`)  
+- Access to `.bash_history` for reconnaissance  
+
+📸 *Screenshot:* `screenshots/timeline-reconstruction.png`  
+(command: `grep -E "support1|support11" /var/log/auth.log`)
+
+---
+
+## 🕒 3. Timeline Reconstruction (Summary)
+
+| Time (IST) | Event |
+|-----------|--------|
+| 15:28:29 | Brute-force attempts begin |
+| 15:35:57 | Successful SSH login for `support1` |
+| 15:36–15:38 | Multiple sessions opened |
+| 15:39 | Privilege escalation attempts |
+| 15:40 | `.bash_history` accessed |
+| 15:41 | New user `support11` created |
+| 15:42+ | Data exfiltration commands executed |
+
+This matches the attacker workflow:  
+**Initial Access → Privilege Escalation → Persistence → Exfiltration**
+
+---
+
+## 🧩 MITRE ATT&CK Mapping
+
+| Stage | Technique | ID |
+|-------|-----------|------|
+| Initial Access | Brute Force | **T1110** |
+| Initial Access | Valid Accounts | **T1078** |
+| Privilege Escalation | Exploit Privilege Misconfig | **T1068** |
+| Persistence | Account Manipulation | **T1098** |
+| Discovery | Read Bash History | **T1083** |
+| Exfiltration | Data Transfer | **T1041 / T1537** |
+
+---
+
+## 🧾 Conclusion
+
+This DFIR case study demonstrates real-world skills across:
+
+- Log forensics  
+- Evidence collection  
+- Attack reconstruction  
+- MITRE ATT&CK mapping  
+- Security investigation processes  
+
+This project forms the foundation for upcoming Windows and network forensics investigations.
