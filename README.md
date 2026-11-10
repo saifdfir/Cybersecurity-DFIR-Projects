@@ -12,7 +12,7 @@ I reviewed authentication and system logs to identify the source IP, trace accou
 
 [Read the Linux lab report](Linux-Attack-Simulation/README.md)
 
-## 📬 Contact
+## Contact
 Open to collaboration on DFIR projects and security research.
 
 - *📧 Email:* [saifcyb@gmail.com](mailto:saifcyb@gmail.com)
