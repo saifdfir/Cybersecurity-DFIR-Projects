@@ -1,42 +1,53 @@
 # Linux Attack Simulation and Log Forensics
 
-I simulated an intrusion on a Linux server and used authentication logs and shell history to reconstruct it. The exercise covered SSH access, sudo activity, creation of a second account, and an attempted data transfer.
+This lab used a Linux server to examine SSH authentication, sudo sessions, local account creation, and a simulated data transfer. The investigation uses authentication logs and shell-history excerpts.
 
-## Attack simulation
+## Evidence review
 
-| Step | What happened | Evidence |
-| --- | --- | --- |
-| SSH brute force | Hydra tried to guess valid SSH credentials. | [Failed attempts](screenshots/brute-force.png) |
-| Successful login | The account `support1` logged in from `10.0.2.2` after repeated failures. | [Login record](screenshots/valid-login.png) |
-| Privilege escalation attempt | The exercise used a sudo misconfiguration to run commands requiring elevated permissions and view root’s Bash history. | [Sudo activity](screenshots/privilege-escalation.png) |
-| Persistence | A second local account, `support11`, was created and added to the sudo group. | [Account creation](screenshots/backdoor-user.png) |
-| Data transfer attempt | The exercise staged `fake_dump.sql` and attempted to transfer it using `curl` and `nc`. | [Transfer commands](screenshots/data-dump-and-exfiltration.png) |
-
-## Investigation
-
-I used `/var/log/auth.log` to trace failed and successful SSH logins, session openings, sudo activity, and account creation. I used shell history to check which commands ran. Searching the authentication log for `support1` and `support11` helped correlate the activity of the two accounts.
-
-[View the timeline evidence](screenshots/timeline-analysis.png)
-
-| Time (IST) | Event |
+| Evidence | What the screenshot shows |
 | --- | --- |
-| 15:28:29 | Brute-force attempts begin |
-| 15:35:57 | Successful SSH login for `support1` |
-| 15:36–15:38 | Multiple sessions open |
-| 15:39 | Privilege escalation attempts |
-| 15:40 | Bash history is accessed |
-| 15:41 | The `support11` account is created |
-| 15:42 onward | Data transfer commands run |
+| [SSH authentication](screenshots/brute-force.png) | Failed password attempts for `devops` from `10.0.2.2`, followed by an accepted password and session opening. |
+| [Sudo activity](screenshots/privilege-escalation.png) | `devops` runs `id` and `bash` as root through sudo. |
+| [Account creation](screenshots/backdoor-user.png) | A local account named `support1` is created and its password is changed. |
+| [SSH login](screenshots/valid-login.png) | `support1` logs in from `10.0.2.2` at 15:29:16. |
+| [Shell-history excerpt](screenshots/data-dump-and-exfiltration.png) | A staged file contains explicitly fake customer data. Recorded curl commands target `127.0.0.1:8080`. |
+| [Account activity](screenshots/timeline-analysis.png) | Additional `support1` sessions and `devops` reading that account’s Bash history. |
+
+The lab notes identify Hydra as the password-guessing tool. The authentication screenshot records the attempts and accepted login, without identifying the tool that generated them.
+
+## Timeline supported by the screenshots
+
+The log date is 7 December 2025. Times below use the recorded UTC+05:30 offset.
+
+| Time | Recorded event |
+| --- | --- |
+| 15:26:26–15:26:48 | Failed SSH password attempts for `devops` |
+| 15:26:53 | Accepted SSH password for `devops` and session opening |
+| 15:27:19 | `devops` runs `id` as root through sudo |
+| 15:27:24 | `devops` starts `bash` as root through sudo |
+| 15:28:29 | Local account `support1` is created |
+| 15:28:43 | Password changed for `support1` |
+| 15:29:16 | Accepted SSH password for `support1` |
+| 15:35:57 | Another accepted SSH login for `support1` |
+| 17:27:32 | `devops` reads `/home/support1/.bash_history` through sudo |
+
+The account-activity screenshot contains entries displayed out of timestamp order. This table sorts the selected events by their recorded time.
 
 ## MITRE ATT&CK mapping
 
-These are the technique IDs recorded in the lab notes. The mappings are interpretations of the observed activity.
+The mappings below describe activities that could occur during an intrusion. They are interpretations of this controlled lab evidence.
 
-| Stage | Activity | Recorded ID |
+| Activity | Mapping | Evidence limit |
 | --- | --- | --- |
-| Initial access | SSH brute force | T1110 |
-| Initial access | Login with valid credentials | T1078 |
-| Privilege escalation | Sudo misconfiguration | T1068 |
-| Persistence | Account and group changes | T1098 |
-| Discovery | Bash history access | T1083 |
-| Exfiltration | Attempted data transfer | T1041 / T1537 |
+| Repeated SSH password attempts | [T1110.001 — Password Guessing](https://attack.mitre.org/techniques/T1110/001/) | Logs show failures and a later accepted password. |
+| SSH access using an accepted password | [T1078 — Valid Accounts](https://attack.mitre.org/techniques/T1078/) | Successful authentication is visible. |
+| Running a root shell through sudo | [T1548.003 — Sudo and Sudo Caching](https://attack.mitre.org/techniques/T1548/003/) | Sudo use is visible. The screenshots do not establish a sudoers misconfiguration or a software exploit. |
+| Creating a local account | [T1136.001 — Local Account](https://attack.mitre.org/techniques/T1136/001/) | Creation of `support1` is visible. The screenshots do not establish that it was a backdoor or added to the sudo group. |
+
+Reading shell history could map to [T1552.003 — Shell History](https://attack.mitre.org/techniques/T1552/003/) when it is used to seek credentials. Here, the visible command reads history during the investigation, so that mapping is conditional on intent.
+
+## Limitations
+
+The screenshots do not show creation of `support11`, a sudo-group change, or a completed transfer to another host. The shell-history excerpt shows curl commands targeting the loopback address and does not establish their execution time or success.
+
+The available evidence supports a sequence of authentication and administrative events. Attribution of each event to attacker activity requires the original session context.

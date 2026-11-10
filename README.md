@@ -6,9 +6,9 @@ I use this repository to document hands-on labs in digital forensics and inciden
 
 ### Linux attack simulation and log analysis
 
-In this Ubuntu Server lab, I simulated an SSH brute-force attack with Hydra, logged in with the compromised account, and tested privilege escalation, persistence, and data transfer.
+In this Ubuntu Server lab, I used an SSH password-guessing scenario to examine authentication logs, sudo activity, local account creation, and a simulated data transfer.
 
-I reviewed authentication and system logs to identify the source IP, trace account activity, and build an incident timeline. The lab report includes the evidence and the MITRE ATT&CK mappings used in the exercise.
+I reviewed the available authentication logs and screenshots to trace account activity and build a timestamped sequence of events. The lab report links each observation to its evidence and explains the limits of the ATT&CK mappings.
 
 [Read the Linux lab report](Linux-Attack-Simulation/README.md)
 
@@ -16,3 +16,4 @@ I reviewed authentication and system logs to identify the source IP, trace accou
 
 - [Email](mailto:saifcyb@gmail.com)
 - [LinkedIn](https://www.linkedin.com/in/mohammed-saif-ul-islam-85a68639a/)
+
