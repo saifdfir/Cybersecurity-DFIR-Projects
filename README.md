@@ -1,67 +1,18 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/saifdfir/Cybersecurity-DFIR-Projects/main/dfir-banner.png" alt="DFIR Banner" width="100%" />
-</p>
+# Cybersecurity & DFIR Projects
 
-<h1 align="center">🛡 Cybersecurity & DFIR Projects</h1>
+I use this repository to document hands-on labs in digital forensics and incident response (DFIR). I run a controlled simulation, then review the logs and screenshots to reconstruct what happened.
 
-<p align="center">
-  <img src="https://img.shields.io/badge/DFIR-Project-blue" />
-  <img src="https://img.shields.io/badge/Linux-Forensics-green" />
-  <img src="https://img.shields.io/badge/MITRE-ATT%26CK-red" />
-</p>
+## Projects
 
-<p align="center">
-A structured collection of hands-on cybersecurity projects focusing on <b>Digital Forensics</b>, <b>Log Analysis</b>, and <b>Incident Response</b>. This repository documents my workflow for simulating attacks, detecting artifacts, and investigating security incidents.
-</p>
+### Linux attack simulation and log analysis
 
----
+In this Ubuntu Server lab, I simulated an SSH brute-force attack with Hydra, logged in with the compromised account, and tested privilege escalation, persistence, and data transfer.
 
-## 📌 Overview
-The goal of this repository is to demonstrate practical competency in **Blue Team operations**. Each project simulates a real-world attack scenario followed by a full forensic investigation.
+I reviewed authentication and system logs to identify the source IP, trace account activity, and build an incident timeline. The lab report includes the evidence and the MITRE ATT&CK mappings used in the exercise.
 
-**Core Competencies Demonstrated:**
-- 🐧 **Linux Security:** Syslog analysis, user tracking, and permission auditing.
-- 🔎 **Forensics:** Timeline reconstruction and artifact correlation.
-- 🛡 **Frameworks:** Mapping attacks to the **MITRE ATT&CK** matrix.
-- 📝 **Reporting:** documenting findings with an Incident Response (IR) mindset.
+[Read the Linux lab report](Linux-Attack-Simulation/README.md)
 
----
+## Contact
 
-## 📂 Project Index
-
-### 1️⃣ *Linux Attack Simulation & Log Analysis*
-**Status:** ✔ Completed
-
-*Scenario:* A compromised Linux server involving brute-force entry and privilege escalation.
-
-* **🔴 Attack Phase (Red Team):**
-    - SSH Brute-force (`Hydra`)
-    - Privilege Escalation via Sudo misuse
-    - Persistence (Backdoor user creation)
-    - Data Exfiltration simulation
-
-* **🔵 Defense Phase (Blue Team):**
-    - Analyzed `/var/log/auth.log` and `/var/log/syslog`
-    - Identified attacker IP and timestamps
-    - Reconstructed the attack lifecycle (Kill Chain)
-    - Mapped TTPs to **MITRE ATT&CK** (T1110, T1078, T1098)
-
----
-
-## 🧰 Tools & Technologies
-
-| Category | Tools & Skills |
-|---------|-------|
-| *Operating Systems* | Ubuntu Server, Windows 10/11 |
-| *Log Analysis* | `syslog`, `auth.log`, Windows Event Viewer, `grep/awk` |
-| *Attack Tools* | Hydra, Nmap, SSH |
-| *Methodologies* | MITRE ATT&CK, Cyber Kill Chain |
-| *Scripting* | Bash (Log parsing & automation) |
-
----
-
-## 📬 Contact
-Open to collaboration on DFIR projects and security research.
-
-- *📧 Email:* [saifcyb@gmail.com](mailto:saifcyb@gmail.com)
-- *🔗 LinkedIn:* [Mohammed Saif Ul Islam](https://www.linkedin.com/in/mohammed-saif-ul-islam-85a68639a/)
+- [Email](mailto:saifcyb@gmail.com)
+- [LinkedIn](https://www.linkedin.com/in/mohammed-saif-ul-islam-85a68639a/)
